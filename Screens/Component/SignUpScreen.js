@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -31,17 +31,22 @@ const { width, height } = Dimensions.get('window');
 const SignUpScreen = () => {
     const navigation = useNavigation();
     const [toggleCheckBox, setToggleCheckBox] = React.useState(false);
+    const [animate,setanimate]=React.useState(false)
     const [data, setData] = React.useState({
         Firstname: '',
         Lastname: '',
         email: '',
         password: '',
+        
+        isdisable: true,
         isValidName: true,
         isValidLastName: true,
         isValidEmail: true,
         isValidPassword: true,
         secureTextEntry: true
     });
+
+    console.log('password check:', data.password)
     //const Tab = createBottomTabNavigator();
     const handleValidName = (val) => {
         let reg = /[A-Za-z]/g;
@@ -92,25 +97,78 @@ const SignUpScreen = () => {
         }
     }
     const handleValidPassword = (val) => {
-        if (val.trim().length >= 9) {
-            setData({
-                ...data,
-                password: val,
-                isValidPassword: true
-            })
+        console.log(val)
+        if (val.trim().length >= 8) {
+        setData({
+            ...data,
+            password: val,
+            isValidPassword: true
+        });
+        if (data.email != '' && data.password != '' && data.Firstname != '' && data.Lastname != '')
+            {
+                console.log("if condition",data)
+                setData(prev => ({ ...prev, isdisable: false }));
+            }
+            else
+            {
+                console.log('error hai bhai ')
+            }
         }
         else {
-            setData({
-                ...data,
-                isValidPassword: false
-            })
+            console.log('hgiagius');
         }
+
+        // if (val.trim().length >= 9) {
+        //     // setData(prev=>({
+        //     //     ...prev,
+        //     //     ...data,
+        //     //     password: val,
+        //     //     isValidPassword: true,
+                
+        //     // }))
+        //     console.log(val.trim().length)
+        //     console.log(data)
+            
+        //     if (data.email != '' && data.password != '' && data.Firstname != '' && data.Lastname != '')
+        //     {
+
+        //         console.log("if condition",data.password)
+        //         setData(prev => ({ ...prev, isdisable: false }));
+        //     }
+        //     else{
+        //         console.log("else condition",data.password)
+        //         setData(prev => ({ ...prev, isdisable: true }));
+        //     }
+        // }
+        // else {
+        //     setData({
+        //         ...data,
+        //         password: "wrong value",
+        //         isValidPassword: false
+        //     })
+        //     if (data.email != '' && data.password != '' && data.Firstname != '' && data.Lastname != '')
+        //     {
+
+        //         console.log("========condition",data.password)
+        //         setData(prev => ({ ...prev, isdisable: false }));
+        //     }
+        // }
     }
     const updateSecureTextEntry = () => {
         setData({
             ...data,
             secureTextEntry: !data.secureTextEntry
         })
+    }
+    const buttonEnable=()=>{
+        //setToggleCheckBox(!toggleCheckBox)
+            if (data.email != '' && data.password != '' && data.Firstname != '' && data.Lastname != '' && toggleCheckBox!=false)
+            {
+                setData(prev => ({ ...prev, isdisable: false }));
+            }
+            else{
+                setData(prev => ({ ...prev, isdisable: true }));
+            }
     }
     const checkInput = async () => {
         // if (data.email != '' && data.password != '' && data.Firstname != '' && data.Lastname != '' && toggleCheckBox!=false) {
@@ -156,6 +214,7 @@ const SignUpScreen = () => {
                          lastname: data.Lastname,
                          email: data.email,
                          password: data.password})
+                         
         }
         else {
             if (!data.Firstname.trim()) {
@@ -177,6 +236,7 @@ const SignUpScreen = () => {
             if (toggleCheckBox === false) {
                 alert('Please select terms and conditions')
             }
+            
         }
 
         // if(!data.Firstname.trim())
@@ -228,8 +288,8 @@ const SignUpScreen = () => {
                             style={styles.input}
                             maxLength={15}
                             dataValue={data.Firstname}
-                            onChangeText={(val) => handleValidName(val)}
-                            //onEndEditing={(e) => handleValidName(e.nativeEvent.text)}
+                            //onChangeText={(val) => handleValidName(val)}
+                            onEndEditing={(e) => handleValidName(e.nativeEvent.text)}
                         />
                         {data.isValidName ? null :
                             <Animatable.View style={{ marginLeft: constant.moderateScale(20), paddingTop: constant.moderateScale(10) }} animation='fadeInLeft' duration={500}>
@@ -279,7 +339,9 @@ const SignUpScreen = () => {
                                 dataValue={data.password}
                                 secureTextEntry={data.secureTextEntry ? true : false}
                                 autoCapitalize="none"
-                                onEndEditing={(e) => handleValidPassword(e.nativeEvent.text)}
+                                
+                                onChangeText={(val) => handleValidPassword(val)}
+                                //onEndEditing={(e) => handleValidPassword(e.nativeEvent.text)}
                             />
                             <TouchableOpacity style={{ position: 'absolute', right: 20, alignSelf: 'center' }} onPress={updateSecureTextEntry}>
                                 {data.secureTextEntry ?
@@ -298,16 +360,16 @@ const SignUpScreen = () => {
                         </View>
                         {data.isValidPassword ? null :
                             <Animatable.View style={{ marginLeft: constant.moderateScale(20), paddingTop: constant.moderateScale(10) }} animation='fadeInLeft' duration={500}>
-                                <Text style={styles.errorMsg}>Password must be 9 chracters long</Text>
+                               
+                               <Text style={styles.errorMsg}>Password must be 9 chracters long</Text>
                             </Animatable.View>
                         }
                     </View>
-
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: constant.moderateScale(30) }}>
                         <CheckBox
                             //value={toggleCheckBox}
                             isChecked={toggleCheckBox}
-                            onClick={() => setToggleCheckBox(!toggleCheckBox)}
+                            onClick={()=>setToggleCheckBox(!toggleCheckBox)}
                             //disabled={true}
                             checkBoxColor="#cc3399"
                             // style={styles.checkbox}
@@ -322,7 +384,8 @@ const SignUpScreen = () => {
                         </Text>
                     </View>
                     <View style={styles.sendBtnView}>
-                        <TouchableOpacity style={styles.btnContainer} onPress={checkInput}>
+                        <TouchableOpacity style={styles.btnContainer} onPress={checkInput} disabled={data.isdisable} >
+                            
                             <Text style={styles.loginText}>Create</Text>
                         </TouchableOpacity>
                     </View>

@@ -1,6 +1,8 @@
 import React from 'react'
-import { Text,View, StyleSheet,Button } from 'react-native'
+import { Text,View, StyleSheet,Button, TouchableOpacity } from 'react-native'
  import RazorpayCheckout from 'react-native-razorpay'
+ import * as constant from './Sizes';
+
 const PaymentGateway =({route,navigation})=>{
    const {paymentDetails} =route.params;
    console.log(paymentDetails)
@@ -28,15 +30,44 @@ const PaymentGateway =({route,navigation})=>{
           });
     }
     return(
-      <View>
-          <Text>
+      <View style={styles.container}>
+          <View style={{flex: 2}}>
+          <Text style={{color:'black'}}>
               PaymentGateway
           </Text>
-          <Button onPress={HandlePayment}  title="Pay"/>
+          </View>
+          <View style={{flex: 2}}>
+          <TouchableOpacity style={styles.button}>
+              <Text style={styles.payText}>
+                  Pay
+              </Text>
+          </TouchableOpacity>
+          </View>
+          {/* <Button onPress={HandlePayment}  title="Pay" /> */}
       </View>
     )
 }
-const style=StyleSheet.create({
+const styles=StyleSheet.create({
+container:{
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center'
+},
+button:{
 
+    width: constant.SCREEN_WIDTH / 1.06,
+    height: constant.moderateScale(55, 1),
+    // margin: constant.moderateScale(10),
+    // marginTop: constant.moderateScale(20),
+    borderRadius: constant.moderateScale(12),
+    justifyContent: 'center',
+    backgroundColor: '#cc3399',
+},
+payText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: constant.moderateScale(17),
+    fontFamily: 'ProductSans-Regular'
+  },
 })
 export default PaymentGateway;
