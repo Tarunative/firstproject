@@ -27,6 +27,7 @@ import {
 import * as constant from './Sizes';
 import Login from './Login';
 import { useState } from 'react/cjs/react.production.min';
+import { State } from 'react-native-gesture-handler';
 const { width, height } = Dimensions.get('window');
 const SignUpScreen = () => {
     const navigation = useNavigation();
@@ -56,6 +57,15 @@ const SignUpScreen = () => {
                 Firstname: val,
                 isValidName: true
             });
+            if (data.email != '' && data.password!='' && val!= '' && data.Lastname != '')
+            {
+                console.log("if condition",data)
+                setData(prev => ({ ...prev, isdisable: false }));
+            }
+            else
+            {
+                console.log('error hai bhai ')
+            }
         }
         else {
             setData({
@@ -72,6 +82,15 @@ const SignUpScreen = () => {
                 Lastname: val,
                 isValidLastName: true
             });
+            if (data.email != '' && data.password!='' && data.Firstname != '' && val!= '')
+            {
+                console.log("if condition",data)
+                setData(prev => ({ ...prev, isdisable: false }));
+            }
+            else
+            {
+                console.log('error hai bhai ')
+            }
         }
         else {
             setData({
@@ -88,23 +107,7 @@ const SignUpScreen = () => {
                 email: val,
                 isValidEmail: true
             });
-        }
-        else {
-            setData({
-                ...data,
-                isValidEmail: false
-            })
-        }
-    }
-    const handleValidPassword = (val) => {
-        console.log(val)
-        if (val.trim().length >= 8) {
-        setData({
-            ...data,
-            password: val,
-            isValidPassword: true
-        });
-        if (data.email != '' && data.password != '' && data.Firstname != '' && data.Lastname != '')
+            if (val!= '' && data.password!='' && data.Firstname != '' && data.Lastname != '')
             {
                 console.log("if condition",data)
                 setData(prev => ({ ...prev, isdisable: false }));
@@ -115,7 +118,40 @@ const SignUpScreen = () => {
             }
         }
         else {
-            console.log('hgiagius');
+            setData({
+                ...data,
+                isValidEmail: false
+            })
+        }
+    }
+    const handleValidPassword = (val) => {
+        console.log(typeof val)
+        if (val.length >= 8) {
+            console.log('insideif')
+            setData(prev =>({
+                
+                ...prev,
+                password: val,
+                isValidPassword: true
+            }));
+            console.log(data.password)
+        if (data.email != '' && val!='' && data.Firstname != '' && data.Lastname != '')
+            {
+                console.log("if condition",data)
+                setData(prev => ({ ...prev, isdisable: false }));
+            }
+            else
+            {
+                console.log('error hai bhai ')
+            }
+            
+        }
+        else {
+            setData({
+                        ...data,
+                        //password: "wrong value",
+                        isValidPassword: false
+                    })
         }
 
         // if (val.trim().length >= 9) {
@@ -384,7 +420,9 @@ const SignUpScreen = () => {
                         </Text>
                     </View>
                     <View style={styles.sendBtnView}>
-                        <TouchableOpacity style={styles.btnContainer} onPress={checkInput} disabled={data.isdisable} >
+                        <TouchableOpacity style={
+                            data.isdisable ? {...styles.btnContainer1} :
+                            {...styles.btnContainer}} onPress={checkInput} disabled={data.isdisable} >
                             
                             <Text style={styles.loginText}>Create</Text>
                         </TouchableOpacity>
@@ -479,6 +517,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#cc3399',
         //marginBottom: constant.moderateScale(50),
+    },
+    btnContainer1: {
+        width: constant.SCREEN_WIDTH / 1.06,
+        height: constant.moderateScale(55, 1),
+        borderRadius: constant.moderateScale(12),
+        justifyContent: 'center',
+        backgroundColor: '#d5869d',
     },
     signupview: {
         backgroundColor: '#fbe9fb',
